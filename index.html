@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KodNest Job Notification Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="kodnest-design-system.css">
+  <script src="jobs-data.js"></script>
+</head>
+
+<body class="kodnest-app">
+
+  <!-- TOP BAR WITH NAVIGATION -->
+  <header class="kodnest-topbar" style="position: sticky; top: 0; z-index: 50;">
+    <div class="kodnest-topbar__project">KodNest Job Tracker</div>
+
+    <div class="kodnest-nav-container">
+      <nav class="kodnest-nav" id="mainNav">
+        <a href="#dashboard" class="kodnest-nav-link" onclick="navigateTo('dashboard')">Dashboard</a>
+        <a href="#saved" class="kodnest-nav-link" onclick="navigateTo('saved')">Saved</a>
+        <a href="#digest" class="kodnest-nav-link" onclick="navigateTo('digest')">Digest</a>
+        <a href="#settings" class="kodnest-nav-link" onclick="navigateTo('settings')">Settings</a>
+        <a href="#test" class="kodnest-nav-link" onclick="navigateTo('test')">Test</a>
+        <a href="#proof" class="kodnest-nav-link" onclick="navigateTo('proof')">Proof</a>
+        <a href="#ship" class="kodnest-nav-link" onclick="navigateTo('ship')">Ship</a>
+      </nav>
+      <div class="kodnest-topbar__status kodnest-topbar__status--progress">v1.0</div>
+      <button class="kodnest-mobile-toggle" aria-label="Menu" onclick="toggleMobileMenu()">
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- LANDING / HERO ROUTE -->
+  <section id="landing-route" class="route-section">
+    <div class="kodnest-hero">
+      <h1 class="kodnest-hero__headline">Stop Missing The Right Jobs.</h1>
+      <p class="kodnest-hero__subtext">Precision-matched job discovery delivered daily at 9AM.</p>
+      <button class="kodnest-btn kodnest-btn--primary" style="padding: 1rem 2rem; font-size: 1.1rem;"
+        onclick="navigateTo('settings')">Start Tracking</button>
+    </div>
+  </section>
+
+  <!-- DASHBOARD ROUTE -->
+  <section id="dashboard-route" class="route-section" style="display:none;">
+    <div class="kodnest-context-header">
+      <h1 class="kodnest-heading kodnest-heading--context">Dashboard</h1>
+      <p class="kodnest-subtext">Manage your active job applications and daily matches.</p>
+
+      <!-- FILTER BAR -->
+      <div class="kodnest-filter-bar">
+        <input type="text" id="filter-keyword" class="kodnest-filter-search" placeholder="Search role or company...">
+        <select id="filter-location" class="kodnest-filter-select">
+          <option value="">Location</option>
+          <option value="Bangalore">Bangalore</option>
+          <option value="Hyderabad">Hyderabad</option>
+          <option value="Pune">Pune</option>
+          <option value="Mumbai">Mumbai</option>
+          <option value="Gurgaon">Gurgaon</option>
+          <option value="Chennai">Chennai</option>
+          <option value="Remote">Remote</option>
+        </select>
+        <select id="filter-status" class="kodnest-filter-select">
+          <option value="">Status (All)</option>
+          <option value="Not Applied">Not Applied</option>
+          <option value="Applied">Applied</option>
+          <option value="Rejected">Rejected</option>
+          <option value="Selected">Selected</option>
+        </select>
+        <select id="filter-mode" class="kodnest-filter-select">
+          <option value="">Mode</option>
+          <option value="Onsite">Onsite</option>
+          <option value="Hybrid">Hybrid</option>
+          <option value="Remote">Remote</option>
+        </select>
+        <select id="filter-exp" class="kodnest-filter-select">
+          <option value="">Experience</option>
+          <option value="Fresher">Fresher</option>
+          <option value="0-1">0-1 Years</option>
+          <option value="1-3">1-3 Years</option>
+          <option value="3-5">3-5 Years</option>
+        </select>
+        <select id="filter-source" class="kodnest-filter-select">
+          <option value="">Source</option>
+          <option value="LinkedIn">LinkedIn</option>
+          <option value="Naukri">Naukri</option>
+          <option value="Indeed">Indeed</option>
+        </select>
+        <select id="filter-sort" class="kodnest-filter-select" onchange="renderDashboard()">
+          <option value="latest">Latest</option>
+          <option value="score">Match Score</option>
+          <option value="salary">Salary</option>
+        </select>
+      </div>
+
+      <!-- MATCH TOGGLE -->
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2);">
+        <label class="kodnest-toggle">
+          <input type="checkbox" id="toggle-match-only" onchange="renderDashboard()">
+          <div class="mtoggle-track">
+            <div class="mtoggle-thumb"></div>
+          </div>
+          <span class="kodnest-body" style="font-weight: 500;">Show only jobs above my threshold</span>
+        </label>
+      </div>
+
+    </div>
+
+    <main class="kodnest-main">
+      <div class="kodnest-workspace" style="width: 100%;">
+        <div id="job-list-container">
+          <!-- Jobs will be rendered here -->
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <!-- SETTINGS ROUTE -->
+  <section id="settings-route" class="route-section" style="display:none;">
+    <div class="kodnest-context-header">
+      <h1 class="kodnest-heading kodnest-heading--context">Settings</h1>
+      <p class="kodnest-subtext">Configure your job preferences to get precision matches.</p>
+    </div>
+
+    <main class="kodnest-main">
+      <div class="kodnest-workspace" style="width: 100%;">
+        <div class="kodnest-card" style="max-width: 600px; margin: 0 auto;">
+          <div class="kodnest-stack">
+
+            <!-- Role Keywords -->
+            <div>
+              <label class="kodnest-body" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Role Keywords
+                (comma separated)</label>
+              <input type="text" id="pref-roles" class="kodnest-input" placeholder="e.g. Frontend, React, Java">
+            </div>
+
+            <!-- Locations (Multi) -->
+            <div>
+              <label class="kodnest-body" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Preferred
+                Locations (comma separated)</label>
+              <input type="text" id="pref-locations" class="kodnest-input" placeholder="e.g. Bangalore, Remote, Pune">
+            </div>
+
+            <!-- Skills -->
+            <div>
+              <label class="kodnest-body" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Skills (comma
+                separated)</label>
+              <input type="text" id="pref-skills" class="kodnest-input" placeholder="e.g. JavaScript, Python, AWS">
+            </div>
+
+            <!-- Mode (Checkboxes) -->
+            <div>
+              <label class="kodnest-body" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Preferred
+                Modes</label>
+              <div style="display: flex; gap: 1rem;">
+                <label><input type="checkbox" name="pref-mode" value="Remote"> Remote</label>
+                <label><input type="checkbox" name="pref-mode" value="Hybrid"> Hybrid</label>
+                <label><input type="checkbox" name="pref-mode" value="Onsite"> Onsite</label>
+              </div>
+            </div>
+
+            <!-- Experience Level (Dropdown) -->
+            <div>
+              <label class="kodnest-body" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Experience
+                Level</label>
+              <select id="pref-exp" class="kodnest-select">
+                <option value="Fresher">Fresher</option>
+                <option value="0-1">0-1 Years</option>
+                <option value="1-3">1-3 Years</option>
+                <option value="3-5">3-5 Years</option>
+              </select>
+            </div>
+
+            <!-- Min Match Score -->
+            <div>
+              <label class="kodnest-body" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">
+                Minimum Match Score: <span id="score-val">40</span>
+              </label>
+              <input type="range" id="pref-min-score" class="kodnest-range" min="0" max="100" value="40"
+                oninput="document.getElementById('score-val').innerText = this.value">
+            </div>
+
+            <button class="kodnest-btn kodnest-btn--primary kodnest-mt-2" onclick="savePreferences()">Save
+              Preferences</button>
+
+          </div>
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <!-- SAVED ROUTE -->
+  <section id="saved-route" class="route-section" style="display:none;">
+    <div class="kodnest-context-header">
+      <h1 class="kodnest-heading kodnest-heading--context">Saved Jobs</h1>
+      <p class="kodnest-subtext">Jobs you have shortlisted for later application.</p>
+    </div>
+    <main class="kodnest-main">
+      <div class="kodnest-workspace" style="width: 100%;">
+        <div id="saved-job-list-container">
+          <!-- Saved Jobs will be rendered here -->
+          <div class="kodnest-empty" id="saved-empty-state">
+            <strong style="display: block; font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--color-text);">No saved
+              jobs.</strong>
+            Your shortlisted opportunities will appear here.
+          </div>
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <!-- DIGEST ROUTE -->
+  <section id="digest-route" class="route-section" style="display:none;">
+    <div class="kodnest-context-header">
+      <h1 class="kodnest-heading kodnest-heading--context">Daily Digest</h1>
+      <p class="kodnest-subtext">Your 9AM daily summary of high-precision matches.</p>
+    </div>
+    <main class="kodnest-main">
+      <div class="kodnest-workspace"
+        style="width: 100%; display: flex; flex-direction: column; align-items: center; min-height: 50vh;">
+
+        <div id="digest-cta" style="text-align: center; margin-bottom: var(--space-4);">
+          <div class="kodnest-empty" id="digest-empty-state">
+            <strong style="display: block; font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--color-text);">Daily
+              Digest</strong>
+            Generate your personalized top 10 matches for today.
+          </div>
+          <button class="kodnest-btn kodnest-btn--primary" onclick="generateDigest()">Generate Today's 9AM Digest
+            (Simulated)</button>
+          <p style="font-size: 0.8rem; color: #888; margin-top: 8px;">Demo Mode: Daily 9AM trigger simulated manually.
+          </p>
+        </div>
+
+        <div id="digest-content" style="width: 100%; display: none;">
+          <!-- Digest UI -->
+        </div>
+
+      </div>
+    </main>
+  </section>
+
+  <!-- TEST CHECKLIST ROUTE -->
+  <section id="test-route" class="route-section" style="display:none;">
+    <div class="kodnest-context-header">
+      <h1 class="kodnest-heading kodnest-heading--context">Test & Verification</h1>
+      <p class="kodnest-subtext">Manual QA checklist to ensure production readiness.</p>
+    </div>
+    <main class="kodnest-main">
+      <div class="kodnest-workspace" style="width: 100%; max-width: 800px; margin: 0 auto;">
+        <div class="kodnest-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: var(--space-4);">
+            <div style="font-weight:700; font-size:1.1rem;" id="test-progress-text">Tests Passed: 0 / 10</div>
+            <button class="kodnest-btn kodnest-btn--secondary btn-xs" onclick="resetTests()">Reset Test Status</button>
+          </div>
+
+          <div id="test-warning"
+            style="background: rgba(139,0,0,0.05); color: darkred; padding: 12px; border-radius: 6px; font-size: 0.9rem; margin-bottom: 20px;">
+            Resolve all issues before shipping.
+          </div>
+
+          <ul class="test-checklist">
+            <li class="test-item"><label class="test-label"><input type="checkbox" onchange="toggleTest(1)" id="test-1">
+                Preferences persist after refresh</label></li>
+            <li class="test-item"><label class="test-label"><input type="checkbox" onchange="toggleTest(2)" id="test-2">
+                Match score calculates correctly</label></li>
+            <li class="test-item"><label class="test-label"><input type="checkbox" onchange="toggleTest(3)" id="test-3">
+                "Show only matches" toggle works</label></li>
+            <li class="test-item"><label class="test-label"><input type="checkbox" onchange="toggleTest(4)" id="test-4">
+                Save job persists after refresh</label></li>
+            <li class="test-item"><label class="test-label"><input type="checkbox" onchange="toggleTest(5)" id="test-5">
+                Apply opens in new tab</label></li>
+            <li class="test-item"><label class="test-label"><input type="checkbox" onchange="toggleTest(6)" id="test-6">
+                Status update persists after refresh</label></li>
+            <li class="test-item"><label class="test-label"><input type="checkbox" onchange="toggleTest(7)" id="test-7">
+                Status filter works correctly</label></li>
+            <li class="test-item"><label class="test-label"><input type="checkbox" onchange="toggleTest(8)" id="test-8">
+                Digest generates top 10 by score</label></li>
+            <li class="test-item"><label class="test-label"><input type="checkbox" onchange="toggleTest(9)" id="test-9">
+                Digest persists for the day</label></li>
+            <li class="test-item"><label class="test-label"><input type="checkbox" onchange="toggleTest(10)"
+                  id="test-10"> No console errors on main pages</label></li>
+          </ul>
+
+          <div style="text-align:right;">
+            <button class="kodnest-btn kodnest-btn--primary" onclick="navigateTo('proof')">Next: Final Proof
+              &rarr;</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <!-- PROOF ROUTE -->
+  <section id="proof-route" class="route-section" style="display:none;">
+    <div class="kodnest-context-header">
+      <h1 class="kodnest-heading kodnest-heading--context">Final Proof /jt/proof</h1>
+      <p class="kodnest-subtext">Project 1 — Job Notification Tracker</p>
+    </div>
+    <main class="kodnest-main">
+      <div class="kodnest-workspace" style="width: 100%; max-width: 800px; margin: 0 auto;">
+
+        <!-- Summary -->
+        <div class="kodnest-card" style="margin-bottom: var(--space-4);">
+          <h3 class="kodnest-heading" style="font-size:1.3rem;">Project Status: <span id="project-status-badge"
+              class="proof-status-badge proof-status-not-started">Not Started</span></h3>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 0.95rem;">
+            <div>1. Skeleton Built <span style="color:green;">✔</span></div>
+            <div>2. UI Routes <span style="color:green;">✔</span></div>
+            <div>3. Data Rendering <span style="color:green;">✔</span></div>
+            <div>4. Match Engine <span style="color:green;">✔</span></div>
+            <div>5. Daily Digest <span style="color:green;">✔</span></div>
+            <div>6. Status Tracking <span style="color:green;">✔</span></div>
+            <div id="proof-step-7">7. Tests Passed <span style="color:#ccc;">●</span></div>
+            <div id="proof-step-8">8. Artifacts/Links <span style="color:#ccc;">●</span></div>
+          </div>
+        </div>
+
+        <!-- Artifact Inputs -->
+        <div class="kodnest-card">
+          <h3 class="kodnest-heading" style="font-size:1.3rem; margin-bottom: 20px;">Artifact Collection</h3>
+
+          <div class="proof-input-group">
+            <label class="proof-label">Lovable Project Link <span style="color:red">*</span></label>
+            <input type="url" id="link-lovable" class="kodnest-input" placeholder="https://lovable.dev/..."
+              oninput="saveArtifacts()">
+          </div>
+
+          <div class="proof-input-group">
+            <label class="proof-label">GitHub Repository Link <span style="color:red">*</span></label>
+            <input type="url" id="link-github" class="kodnest-input" placeholder="https://github.com/..."
+              oninput="saveArtifacts()">
+          </div>
+
+          <div class="proof-input-group">
+            <label class="proof-label">Deployed URL <span style="color:red">*</span></label>
+            <input type="url" id="link-deploy" class="kodnest-input" placeholder="https://vercel.app/..."
+              oninput="saveArtifacts()">
+          </div>
+
+          <div
+            style="margin-top: 2rem; border-top: 1px solid #eee; padding-top: 2rem; display: flex; justify-content: space-between; align-items: center;">
+            <button class="kodnest-btn kodnest-btn--secondary" onclick="copySubmission()">Copy Final Submission</button>
+            <button class="kodnest-btn kodnest-btn--primary" onclick="navigateTo('ship')">Proceed to Ship
+              &rarr;</button>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </section>
+
+  <!-- SHIP ROUTE -->
+  <section id="ship-route" class="route-section" style="display:none;">
+    <div class="kodnest-context-header">
+      <h1 class="kodnest-heading kodnest-heading--context">Ship Project</h1>
+      <p class="kodnest-subtext">Release validation gate.</p>
+    </div>
+    <main class="kodnest-main">
+      <div class="kodnest-workspace" style="width: 100%; max-width: 800px; margin: 0 auto;">
+
+        <!-- LOCKED VIEW -->
+        <div id="ship-locked-view" class="ship-locked">
+          <span class="ship-icon">🔒</span>
+          <h2 style="margin-bottom: 1rem;">Validation Required</h2>
+          <p style="margin-bottom: 2rem; max-width: 400px; margin-left: auto; margin-right: auto;">
+            You cannot ship this project until all tests are passed and all artifact links are provided.
+          </p>
+          <div style="display: flex; gap: 10px; justify-content: center;">
+            <button class="kodnest-btn kodnest-btn--secondary" onclick="navigateTo('test')">Go to Tests</button>
+            <button class="kodnest-btn kodnest-btn--secondary" onclick="navigateTo('proof')">Go to Proof</button>
+          </div>
+        </div>
+
+        <!-- UNLOCKED VIEW -->
+        <div id="ship-unlocked-view" style="display: none; text-align: center; padding: 4rem 1rem;">
+          <div style="font-size: 4rem; margin-bottom: 1rem;">🚢</div>
+          <h1 class="kodnest-heading" style="font-size: 2.5rem; color: var(--color-accent); margin-bottom: 1rem;">
+            Project 1 Shipped Successfully.</h1>
+          <p class="kodnest-subtext" style="font-size: 1.2rem; margin: 0 auto 2rem;">All systems operational. Artifacts
+            secured.</p>
+
+          <div
+            style="padding: 2rem; background: #fff; border: 1px solid #eee; border-radius: 8px; max-width: 500px; margin: 0 auto; text-align: left;">
+            <h4 style="margin: 0 0 1rem;">Submission Receipt:</h4>
+            <pre id="receipt-text"
+              style="font-family: monospace; color: #555; background: #f9f9f9; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;"></pre>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </section>
+
+  <!-- JOB DETAIL MODAL (unchanged) -->
+  <div class="kodnest-modal-overlay" id="job-modal">
+    <div class="kodnest-modal">
+      <div class="modal-header">
+        <div>
+          <h2 class="kodnest-heading" style="font-size: 1.5rem; margin-bottom: 0.25rem;" id="modal-title">Job Title</h2>
+          <div class="kodnest-subtext" style="margin-bottom: 0;" id="modal-company">Company Name</div>
+        </div>
+        <button class="close-modal-btn" onclick="closeModal()">×</button>
+      </div>
+      <div class="modal-content">
+        <div class="job-card__meta" id="modal-tags">
+          <!-- Tags injected here -->
+        </div>
+        <div class="kodnest-body" id="modal-desc" style="white-space: pre-wrap;">
+          Job description goes here...
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="kodnest-btn kodnest-btn--secondary" onclick="closeModal()">Close</button>
+        <button class="kodnest-btn kodnest-btn--primary" id="modal-apply-btn">Apply Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="kodnest-toast" id="toast">
+    Status updated
+  </div>
+
+  <script>
+    // --- STATE MANAGEMENT ---
+    let savedJobIds = JSON.parse(localStorage.getItem('kodnest_saved_jobs') || '[]');
+    let userPreferences = JSON.parse(localStorage.getItem('jobTrackerPreferences') || 'null');
+    let jobStatuses = JSON.parse(localStorage.getItem('jobTrackerStatus') || '{}');
+    let statusHistory = JSON.parse(localStorage.getItem('jobTrackerStatusHistory') || '[]');
+
+    // New State for Tests & Proof
+    let testStatus = JSON.parse(localStorage.getItem('jobTrackerTestStatus') || '{}');
+    let artifacts = JSON.parse(localStorage.getItem('jobTrackerArtifacts') || '{"lovable":"","github":"","deploy":""}');
+
+    // --- ROUTER ---
+    function navigateTo(routeId) {
+      document.querySelectorAll('.route-section').forEach(el => el.style.display = 'none');
+
+      const targetId = routeId === '' ? 'landing' : routeId;
+      const target = document.getElementById(targetId + '-route');
+
+      if (target) {
+        target.style.display = 'block';
+        if (targetId === 'dashboard') renderDashboard();
+        if (targetId === 'saved') renderSaved();
+        if (targetId === 'settings') loadPreferences();
+        if (targetId === 'digest') checkDigest();
+        if (targetId === 'test') renderTests();
+        if (targetId === 'proof') renderProof();
+        if (targetId === 'ship') renderShip();
+      } else {
+        document.getElementById('landing-route').style.display = 'block';
+      }
+
+      document.querySelectorAll('.kodnest-nav-link').forEach(link => {
+        link.classList.remove('active');
+        const href = link.getAttribute('href');
+        if (href === '#' + routeId) {
+          link.classList.add('active');
+        }
+      });
+
+      // Explicitly set nav state for hash
+      if (routeId === 'landing') {
+        // Clear hash for landing
+        history.pushState(null, null, ' ');
+      } else {
+        window.location.hash = routeId;
+      }
+
+      const nav = document.getElementById('mainNav');
+      if (nav) nav.classList.remove('open');
+    }
+
+    function toggleMobileMenu() {
+      const nav = document.getElementById('mainNav');
+      nav.classList.toggle('open');
+    }
+
+    // --- PREFERENCES LOGIC ---
+    function savePreferences() {
+      const roles = document.getElementById('pref-roles').value.split(',').map(s => s.trim()).filter(s => s);
+      const locations = document.getElementById('pref-locations').value.split(',').map(s => s.trim()).filter(s => s);
+      const skills = document.getElementById('pref-skills').value.split(',').map(s => s.trim()).filter(s => s);
+      const minScore = parseInt(document.getElementById('pref-min-score').value);
+      const exp = document.getElementById('pref-exp').value;
+
+      const modes = [];
+      document.querySelectorAll('input[name="pref-mode"]:checked').forEach(el => modes.push(el.value));
+
+      userPreferences = {
+        roles,
+        locations,
+        skills,
+        minScore,
+        exp,
+        modes
+      };
+
+      localStorage.setItem('jobTrackerPreferences', JSON.stringify(userPreferences));
+      showToast('Preferences Saved!');
+    }
+
+    function loadPreferences() {
+      if (!userPreferences) return;
+
+      document.getElementById('pref-roles').value = userPreferences.roles.join(', ');
+      document.getElementById('pref-locations').value = userPreferences.locations.join(', ');
+      document.getElementById('pref-skills').value = userPreferences.skills.join(', ');
+      document.getElementById('pref-min-score').value = userPreferences.minScore;
+      document.getElementById('score-val').innerText = userPreferences.minScore;
+      document.getElementById('pref-exp').value = userPreferences.exp;
+
+      document.querySelectorAll('input[name="pref-mode"]').forEach(el => {
+        el.checked = userPreferences.modes.includes(el.value);
+      });
+    }
+
+    // --- MATCH ENGINE ---
+    function calculateMatchScore(job, prefs) {
+      if (!prefs) return 0;
+
+      let score = 0;
+      const titleLower = job.title.toLowerCase();
+      if (prefs.roles.some(role => titleLower.includes(role.toLowerCase()))) score += 25;
+
+      const descLower = job.description.toLowerCase();
+      if (prefs.roles.some(role => descLower.includes(role.toLowerCase()))) score += 15;
+
+      if (prefs.locations.some(loc => job.location.toLowerCase().includes(loc.toLowerCase()))) score += 15;
+
+      if (prefs.modes.includes(job.mode)) score += 10;
+      if (job.experience === prefs.exp) score += 10;
+
+      if (prefs.skills.some(skill => job.skills.map(s => s.toLowerCase()).includes(skill.toLowerCase()))) score += 15;
+
+      if (job.postedDaysAgo <= 2) score += 5;
+      if (job.source === 'LinkedIn') score += 5;
+
+      return Math.min(score, 100);
+    }
+
+    function getScoreBadgeClass(score) {
+      if (score >= 80) return 'score-high';
+      if (score >= 60) return 'score-med';
+      if (score >= 40) return 'score-neutral';
+      return 'score-low';
+    }
+
+    // --- STATUS ENGINE ---
+    function updateJobStatus(id, newStatus) {
+      const job = JOBS_DATA.find(j => j.id === id);
+      if (!job) return;
+
+      const oldStatus = jobStatuses[id] || 'Not Applied';
+      if (oldStatus === newStatus) return;
+
+      jobStatuses[id] = newStatus;
+      localStorage.setItem('jobTrackerStatus', JSON.stringify(jobStatuses));
+
+      const historyItem = {
+        jobId: id,
+        jobTitle: job.title,
+        company: job.company,
+        status: newStatus,
+        date: new Date().toISOString()
+      };
+      statusHistory.unshift(historyItem);
+      if (statusHistory.length > 50) statusHistory.pop();
+      localStorage.setItem('jobTrackerStatusHistory', JSON.stringify(statusHistory));
+
+      showToast(`Status updated: ${newStatus}`);
+
+      const currentRoute = window.location.hash.replace('#', '') || 'landing';
+      if (currentRoute === 'dashboard') renderDashboard();
+      if (currentRoute === 'saved') renderSaved();
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.innerText = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // --- TEST & PROOF LOGIC ---
+
+    function resetTests() {
+      testStatus = {};
+      for (let i = 1; i <= 10; i++) testStatus[i] = false;
+      localStorage.setItem('jobTrackerTestStatus', JSON.stringify(testStatus));
+      renderTests();
+    }
+
+    function toggleTest(id) {
+      testStatus[id] = document.getElementById('test-' + id).checked;
+      localStorage.setItem('jobTrackerTestStatus', JSON.stringify(testStatus));
+      renderTests(); // Update progress UI
+    }
+
+    function renderTests() {
+      let passed = 0;
+      for (let i = 1; i <= 10; i++) {
+        const isChecked = testStatus[i] || false;
+        document.getElementById('test-' + i).checked = isChecked;
+        if (isChecked) passed++;
+      }
+
+      document.getElementById('test-progress-text').innerText = `Tests Passed: ${passed} / 10`;
+      const warning = document.getElementById('test-warning');
+      if (passed < 10) {
+        warning.style.display = 'block';
+        warning.style.background = 'rgba(139,0,0,0.05)';
+        warning.style.color = 'darkred';
+        warning.innerText = "Resolve all issues before shipping.";
+      } else {
+        warning.style.display = 'block';
+        warning.style.background = '#D1FAE5';
+        warning.style.color = '#059669';
+        warning.innerText = "All tests passed. Ready for Proof.";
+      }
+    }
+
+    function saveArtifacts() {
+      artifacts = {
+        lovable: document.getElementById('link-lovable').value,
+        github: document.getElementById('link-github').value,
+        deploy: document.getElementById('link-deploy').value
+      };
+      localStorage.setItem('jobTrackerArtifacts', JSON.stringify(artifacts));
+      updateProofStatus();
+    }
+
+    function renderProof() {
+      // Load values
+      document.getElementById('link-lovable').value = artifacts.lovable || '';
+      document.getElementById('link-github').value = artifacts.github || '';
+      document.getElementById('link-deploy').value = artifacts.deploy || '';
+
+      // Update Step Summary
+      const allTestsPassed = Object.values(testStatus).filter(v => v).length === 10;
+      const s7 = document.getElementById('proof-step-7');
+      if (allTestsPassed) {
+        s7.innerHTML = '7. Tests Passed <span style="color:green;">✔</span>';
+      } else {
+        s7.innerHTML = '7. Tests Passed <span style="color:red;">✘</span>';
+      }
+
+      updateProofStatus();
+    }
+
+    function updateProofStatus() {
+      const allTestsPassed = Object.values(testStatus).filter(v => v).length === 10;
+      const hasLinks = artifacts.lovable && artifacts.github && artifacts.deploy;
+
+      const badge = document.getElementById('project-status-badge');
+      const s8 = document.getElementById('proof-step-8');
+
+      if (hasLinks) {
+        s8.innerHTML = '8. Artifacts/Links <span style="color:green;">✔</span>';
+      } else {
+        s8.innerHTML = '8. Artifacts/Links <span style="color:#ccc;">●</span>';
+      }
+
+      if (allTestsPassed && hasLinks) {
+        badge.className = 'proof-status-badge proof-status-shipped';
+        badge.innerText = 'Shipped';
+      } else if (allTestsPassed || hasLinks) {
+        badge.className = 'proof-status-badge proof-status-in-progress';
+        badge.innerText = 'In Progress';
+      } else {
+        badge.className = 'proof-status-badge proof-status-not-started';
+        badge.innerText = 'Not Started';
+      }
+    }
+
+    function copySubmission() {
+      const text = `
+Job Notification Tracker — Final Submission
+
+Lovable Project:
+${artifacts.lovable || '[Missing]'}
+
+GitHub Repository:
+${artifacts.github || '[Missing]'}
+
+Live Deployment:
+${artifacts.deploy || '[Missing]'}
+
+Core Features:
+- Intelligent match scoring
+- Daily digest simulation
+- Status tracking
+- Test checklist enforced
+`.trim();
+
+      navigator.clipboard.writeText(text).then(() => showToast('Submission copied to clipboard!'));
+    }
+
+    function renderShip() {
+      const allTestsPassed = Object.values(testStatus).filter(v =>
+        // Handle if there are fewer than 10 keys in storage initially
+        v === true
+      ).length === 10;
+
+      const hasLinks = artifacts.lovable && artifacts.github && artifacts.deploy;
+      const isReady = allTestsPassed && hasLinks;
+
+      const lockedView = document.getElementById('ship-locked-view');
+      const unlockedView = document.getElementById('ship-unlocked-view');
+
+      if (isReady) {
+        lockedView.style.display = 'none';
+        unlockedView.style.display = 'block';
+
+        // Generate Receipt
+        const text = `
+Job Notification Tracker — Final Submission
+
+Lovable Project:
+${artifacts.lovable}
+
+GitHub Repository:
+${artifacts.github}
+
+Live Deployment:
+${artifacts.deploy}
+
+[X] Tests Passed (10/10)
+[X] Artifacts Secured
+[X] Status: SHIPPED
+`.trim();
+        document.getElementById('receipt-text').innerText = text;
+
+      } else {
+        lockedView.style.display = 'block';
+        unlockedView.style.display = 'none';
+      }
+    }
+
+
+    // --- RENDERING LOGIC (Existing) ---
+
+    function renderDashboard() {
+      const container = document.getElementById('job-list-container');
+      container.innerHTML = '';
+
+      if (!userPreferences) {
+        container.innerHTML = `
+            <div class="kodnest-prompt-box" style="text-align:center; padding: 2rem;">
+                <h3 style="margin-top:0;">Activate Intelligent Matching</h3>
+                <p>Set your preferences in Settings to see Match Scores and Smart Filters.</p>
+                <button class="kodnest-btn kodnest-btn--primary" onclick="navigateTo('settings')">Set Preferences</button>
+            </div>
+          `;
+      }
+
+      // 1. Filter
+      const keyword = document.getElementById('filter-keyword').value.toLowerCase();
+      const location = document.getElementById('filter-location').value;
+      const mode = document.getElementById('filter-mode').value;
+      const exp = document.getElementById('filter-exp').value;
+      const source = document.getElementById('filter-source').value;
+      const statusFilter = document.getElementById('filter-status').value;
+      const showMatchOnly = document.getElementById('toggle-match-only').checked;
+      const sortType = document.getElementById('filter-sort').value;
+
+      let processedJobs = JOBS_DATA.map(job => {
+        return { ...job, matchScore: calculateMatchScore(job, userPreferences) };
+      });
+
+      processedJobs = processedJobs.filter(job => {
+        const matchesKeyword = !keyword || job.title.toLowerCase().includes(keyword) || job.company.toLowerCase().includes(keyword);
+        const matchesLocation = !location || job.location.includes(location);
+        const matchesMode = !mode || job.mode === mode;
+        const matchesExp = !exp || job.experience === exp;
+        const matchesSource = !source || job.source === source;
+        const matchesScore = !showMatchOnly || (userPreferences && job.matchScore >= userPreferences.minScore);
+
+        const currentStatus = jobStatuses[job.id] || 'Not Applied';
+        const matchesStatus = !statusFilter || currentStatus === statusFilter;
+
+        return matchesKeyword && matchesLocation && matchesMode && matchesExp && matchesSource && matchesScore && matchesStatus;
+      });
+
+      // 2. Sort
+      processedJobs.sort((a, b) => {
+        if (sortType === 'latest') return a.postedDaysAgo - b.postedDaysAgo;
+        if (sortType === 'score') return b.matchScore - a.matchScore;
+        if (sortType === 'salary') {
+          const getSal = (s) => parseFloat(s.match(/[\d\.]+/)?.[0] || 0);
+          return getSal(b.salaryRange) - getSal(a.salaryRange);
+        }
+        return 0;
+      });
+
+      if (processedJobs.length === 0) {
+        const emptyMsg = showMatchOnly
+          ? "No roles match your criteria above the threshold. Adjust filters or lower threshold."
+          : "No matching jobs found. Try adjusting your filters.";
+
+        container.innerHTML += `
+          <div class="kodnest-empty">
+             <strong style="display: block; font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--color-text);">${emptyMsg}</strong>
+          </div>
+        `;
+        return;
+      }
+
+      processedJobs.forEach(job => {
+        container.appendChild(createJobCard(job, true));
+      });
+    }
+
+    function renderSaved() {
+      const container = document.getElementById('saved-job-list-container');
+      const emptyState = document.getElementById('saved-empty-state');
+
+      if (savedJobIds.length === 0 || !JOBS_DATA.length) {
+        container.innerHTML = '';
+        container.appendChild(emptyState);
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      container.innerHTML = '';
+
+      const savedJobs = JOBS_DATA
+        .filter(job => savedJobIds.includes(job.id))
+        .map(job => ({ ...job, matchScore: calculateMatchScore(job, userPreferences) }));
+
+      if (savedJobs.length === 0) {
+        container.appendChild(emptyState);
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      savedJobs.forEach(job => {
+        container.appendChild(createJobCard(job, true));
+      });
+    }
+
+    function createJobCard(job, showScore) {
+      const card = document.createElement('div');
+      card.className = 'job-card';
+
+      const isSaved = savedJobIds.includes(job.id);
+      const sourceClass = 'source-' + job.source.toLowerCase();
+
+      const currentStatus = jobStatuses[job.id] || 'Not Applied';
+      const statusClass = 'status-' + currentStatus.toLowerCase().replace(' ', '-');
+
+      let scoreBadgeHTML = '';
+      if (showScore && userPreferences) {
+        const badgeClass = getScoreBadgeClass(job.matchScore);
+        scoreBadgeHTML = `<div class="score-badge ${badgeClass}" title="Match Score">${job.matchScore}</div>`;
+      }
+
+      card.innerHTML = `
+        <div class="job-card__header">
+          <div style="flex: 1;">
+             <h3 class="job-card__title">${job.title}</h3>
+             <div class="job-card__company">${job.company}</div>
+          </div>
+          <div style="display:flex; align-items:flex-start;">
+            <span class="job-source-badge ${sourceClass}">${job.source}</span>
+            ${scoreBadgeHTML}
+          </div>
+        </div>
+        
+        <div class="job-card__meta">
+          <span class="job-tag">${job.location}</span>
+          <span class="job-tag">${job.mode}</span>
+          <span class="job-tag">${job.experience}</span>
+          <span class="job-tag" style="background: rgba(139,0,0,0.08); color: darkred; font-weight:500;">${job.salaryRange}</span>
+          <span class="status-badge ${statusClass}">${currentStatus}</span>
+        </div>
+
+        <div class="job-card__footer">
+          <span class="job-posted">Posted ${job.postedDaysAgo}d ago</span>
+          <div class="job-actions">
+            <!-- Save Button -->
+             <button class="kodnest-btn ${isSaved ? 'kodnest-btn--primary' : 'kodnest-btn--secondary'} btn-xs" 
+                    onclick="toggleSave(${job.id})">
+                    ${isSaved ? 'Saved' : 'Save'}
+            </button>
+            
+            <!-- Status Selector -->
+            <select class="kodnest-select-xs" onchange="updateJobStatus(${job.id}, this.value)">
+                <option value="Not Applied" ${currentStatus === 'Not Applied' ? 'selected' : ''}>Not Applied</option>
+                <option value="Applied" ${currentStatus === 'Applied' ? 'selected' : ''}>Applied</option>
+                <option value="Rejected" ${currentStatus === 'Rejected' ? 'selected' : ''}>Rejected</option>
+                <option value="Selected" ${currentStatus === 'Selected' ? 'selected' : ''}>Selected</option>
+            </select>
+
+            <!-- Actions -->
+            <button class="kodnest-btn kodnest-btn--secondary btn-xs" onclick="openModal(${job.id})">View</button>
+            <button class="kodnest-btn kodnest-btn--primary btn-xs" onclick="window.open('${job.applyUrl}', '_blank')">Apply</button>
+          </div>
+        </div>
+      `;
+      return card;
+    }
+
+    // --- DIGEST ENGINE (Existing) ---
+
+    function checkDigest() {
+      const today = new Date().toISOString().split('T')[0];
+      const storedDigest = localStorage.getItem('jobTrackerDigest_' + today);
+
+      const cta = document.getElementById('digest-cta');
+      const content = document.getElementById('digest-content');
+
+      if (storedDigest) {
+        cta.style.display = 'none';
+        content.style.display = 'block';
+        renderDigestUI(JSON.parse(storedDigest));
+      } else {
+        cta.style.display = 'block';
+        content.style.display = 'none';
+
+        if (!userPreferences) {
+          // ... Same logic as before
+          document.getElementById('digest-empty-state').innerHTML = `
+                    <strong style="display: block; font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--color-text);">Preferences Required</strong>
+                     Set your preferences to generate a personalized digest.
+                `;
+          document.querySelector('#digest-cta button').disabled = true;
+          document.querySelector('#digest-cta button').innerText = "Set Preferences First";
+          document.querySelector('#digest-cta button').onclick = () => navigateTo('settings');
+        } else {
+          document.getElementById('digest-empty-state').innerHTML = `
+                    <strong style="display: block; font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--color-text);">Daily Digest</strong>
+                    Generate your personalized top 10 matches for today.
+                 `;
+          document.querySelector('#digest-cta button').disabled = false;
+          document.querySelector('#digest-cta button').innerText = "Generate Today's 9AM Digest (Simulated)";
+          document.querySelector('#digest-cta button').onclick = generateDigest;
+        }
+      }
+    }
+
+    function generateDigest() {
+      if (!userPreferences) {
+        alert('Please set matches first');
+        return;
+      }
+      let digestJobs = JOBS_DATA.map(job => ({ ...job, matchScore: calculateMatchScore(job, userPreferences) }));
+      digestJobs = digestJobs.filter(j => j.matchScore > 0);
+
+      if (digestJobs.length === 0) {
+        document.getElementById('digest-empty-state').innerHTML = `
+                <strong style="display: block; font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--color-text);">No matching roles today.</strong>
+                Check again tomorrow.
+             `;
+        return;
+      }
+
+      digestJobs.sort((a, b) => {
+        if (b.matchScore !== a.matchScore) return b.matchScore - a.matchScore;
+        return a.postedDaysAgo - b.postedDaysAgo;
+      });
+      const top10 = digestJobs.slice(0, 10);
+
+      const today = new Date().toISOString().split('T')[0];
+      localStorage.setItem('jobTrackerDigest_' + today, JSON.stringify(top10));
+      checkDigest();
+    }
+
+    function renderDigestUI(jobs) {
+      const container = document.getElementById('digest-content');
+      const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+      let listHTML = '';
+      jobs.forEach(job => {
+        listHTML += `
+              <div class="digest-item">
+                  <div class="digest-item-info">
+                      <h3>${job.title}</h3>
+                      <div class="digest-item-meta">
+                          <span>${job.company}</span> • 
+                          <span>${job.location}</span> • 
+                          <span>${job.experience}</span>
+                      </div>
+                  </div>
+                  <div style="text-align:right;">
+                      <div class="digest-score">${job.matchScore}% Match</div>
+                      <a href="${job.applyUrl}" target="_blank" style="font-size:0.85rem; color:var(--color-accent); text-decoration:none; font-weight:600;">Apply &rarr;</a>
+                  </div>
+              </div>
+            `;
+      });
+
+      // Add Recent Status Updates
+      let historyHTML = '';
+      if (statusHistory.length > 0) {
+        const recent = statusHistory.slice(0, 5);
+        historyHTML += `<div style="padding: var(--space-4); background: #fafafa; border-top: 1px solid rgba(17,17,17,0.1);">
+              <h3 style="margin: 0 0 var(--space-2); font-size: 1.1rem;">Recent Status Updates</h3>`;
+
+        recent.forEach(h => {
+          const dateStr = new Date(h.date).toLocaleDateString();
+          historyHTML += `
+                  <div class="digest-history-item">
+                      <div class="digest-history-date">${dateStr}</div>
+                      <strong>${h.jobTitle}</strong> at ${h.company} &rarr; <span style="font-weight:600;">${h.status}</span>
+                  </div>
+                `;
+        });
+        historyHTML += `</div>`;
+      }
+
+
+      container.innerHTML = `
+           <div class="digest-container">
+               <div class="digest-header">
+                   <h2>Top 10 Jobs For You — 9AM Digest</h2>
+                   <div class="digest-date">${today}</div>
+               </div>
+               <div class="digest-body">
+                   <h3 style="margin-top:0;">Your Top Matches</h3>
+                   ${listHTML}
+               </div>
+               ${historyHTML}
+               <div class="digest-footer">
+                   This digest was generated based on your preferences.
+               </div>
+           </div>
+
+           <div class="digest-actions">
+               <button class="kodnest-btn kodnest-btn--secondary" onclick="copyDigest()">Copy Digest to Clipboard</button>
+               <button class="kodnest-btn kodnest-btn--secondary" onclick="emailDigest()">Create Email Draft</button>
+           </div>
+        `;
+    }
+
+    function copyDigest() {
+      const c = document.querySelector('.digest-container').innerText;
+      navigator.clipboard.writeText(c).then(() => showToast('Copied to clipboard!'));
+    }
+
+    function emailDigest() {
+      const c = document.querySelector('.digest-container').innerText;
+      const subject = encodeURIComponent("My 9AM Job Digest");
+      const body = encodeURIComponent(c);
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    }
+
+    // --- ACTIONS ---
+
+    function toggleSave(id) {
+      if (savedJobIds.includes(id)) {
+        savedJobIds = savedJobIds.filter(savedId => savedId !== id);
+      } else {
+        savedJobIds.push(id);
+      }
+      localStorage.setItem('kodnest_saved_jobs', JSON.stringify(savedJobIds));
+
+      const currentHash = window.location.hash.replace('#', '') || 'landing';
+      if (currentHash === 'dashboard') renderDashboard();
+      if (currentHash === 'saved') renderSaved();
+    }
+
+    function openModal(id) {
+      const job = JOBS_DATA.find(j => j.id === id);
+      if (!job) return;
+
+      document.getElementById('modal-title').innerText = job.title;
+      document.getElementById('modal-company').innerText = job.company;
+      document.getElementById('modal-desc').innerText = job.description;
+
+      const score = userPreferences ? calculateMatchScore(job, userPreferences) : null;
+      const scoreHTML = score !== null ? `<span class="score-badge ${getScoreBadgeClass(score)}">${score}</span>` : '';
+
+      const status = jobStatuses[id] || 'Not Applied';
+      const statusHTML = `<span class="status-badge status-${status.toLowerCase().replace(' ', '-')}">${status}</span>`;
+
+      const tagsContainer = document.getElementById('modal-tags');
+      tagsContainer.innerHTML = `
+          <span class="job-tag">${job.location}</span>
+          <span class="job-tag">${job.mode}</span>
+          <span class="job-tag">${job.experience}</span>
+          <span class="job-tag">${job.salaryRange}</span>
+          ${scoreHTML}
+          ${statusHTML}
+      `;
+      job.skills.forEach(skill => {
+        tagsContainer.innerHTML += `<span class="job-tag" style="background:#eee;">${skill}</span>`;
+      });
+
+      document.getElementById('modal-apply-btn').onclick = () => window.open(job.applyUrl, '_blank');
+
+      document.getElementById('job-modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('job-modal').classList.remove('open');
+    }
+
+    window.onclick = function (event) {
+      if (event.target == document.getElementById('job-modal')) {
+        closeModal();
+      }
+    }
+
+    // --- INIT ---
+
+    window.addEventListener('input', (e) => {
+      if (e.target.closest('.kodnest-filter-bar')) {
+        renderDashboard();
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      let hash = window.location.hash.replace('#', '');
+      if (!hash) hash = 'landing';
+      navigateTo(hash);
+    });
+
+    window.addEventListener('hashchange', () => {
+      let hash = window.location.hash.replace('#', '');
+      if (!hash) hash = 'landing';
+      navigateTo(hash);
+    });
+
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,1064 @@
+/**
+ * KodNest Premium Build System — Design Tokens & Base Styles
+ * Calm, intentional, coherent, confident. One mind designed it.
+ */
+
+/* ==========================================================================
+   DESIGN TOKENS
+   ========================================================================== */
+
+:root {
+  /* Colors — maximum 4 in use across the system */
+  --color-bg: #F7F6F3;
+  --color-text: #111111;
+  --color-accent: #8B0000;
+  --color-success: #4A5D4A;
+  --color-warning: #7A5C0A;
+
+  /* Typography */
+  --font-serif: "Libre Baskerville", "Georgia", serif;
+  --font-sans: "Source Sans 3", "Segoe UI", sans-serif;
+
+  --text-heading-size: 2rem;
+  --text-heading-size-lg: 2.5rem;
+  --text-body-size: 1.0625rem;
+  /* ~17px */
+  --text-body-size-lg: 1.125rem;
+  /* 18px */
+  --text-line-height: 1.65;
+  --text-line-height-loose: 1.75;
+  --text-measure: 720px;
+
+  /* Spacing scale — only these values */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 40px;
+  --space-5: 64px;
+
+  /* Layout */
+  --workspace-width: 70%;
+  --panel-width: 30%;
+  --radius: 6px;
+  --transition: 150ms ease-in-out;
+  --transition-slow: 200ms ease-in-out;
+}
+
+/* ==========================================================================
+   RESET & BASE
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-body-size);
+  line-height: var(--text-line-height);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+}
+
+/* ==========================================================================
+   TYPOGRAPHY
+   ========================================================================== */
+
+.kodnest-heading {
+  font-family: var(--font-serif);
+  font-size: var(--text-heading-size-lg);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+  margin: 0 0 var(--space-2) 0;
+  color: var(--color-text);
+}
+
+.kodnest-heading--context {
+  font-size: var(--text-heading-size-lg);
+  margin-bottom: var(--space-1);
+}
+
+.kodnest-subtext {
+  font-size: var(--text-body-size);
+  line-height: var(--text-line-height);
+  color: var(--color-text);
+  opacity: 0.9;
+  margin: 0 0 var(--space-3) 0;
+  max-width: var(--text-measure);
+}
+
+.kodnest-body {
+  font-size: var(--text-body-size);
+  line-height: var(--text-line-height);
+  max-width: var(--text-measure);
+}
+
+/* ==========================================================================
+   NAVIGATION
+   ========================================================================== */
+
+.kodnest-nav-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.kodnest-nav {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.kodnest-nav-link {
+  font-family: var(--font-sans);
+  font-size: var(--text-body-size);
+  color: var(--color-text);
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent;
+  transition: border-color var(--transition), color var(--transition);
+  opacity: 0.75;
+}
+
+.kodnest-nav-link:hover {
+  opacity: 1;
+}
+
+.kodnest-nav-link.active {
+  opacity: 1;
+  border-bottom-color: var(--color-accent);
+  font-weight: 500;
+}
+
+.kodnest-mobile-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-1);
+}
+
+.kodnest-mobile-toggle span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--color-text);
+  position: relative;
+}
+
+.kodnest-mobile-toggle span::before,
+.kodnest-mobile-toggle span::after {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 2px;
+  background: var(--color-text);
+  left: 0;
+}
+
+.kodnest-mobile-toggle span::before {
+  top: -7px;
+}
+
+.kodnest-mobile-toggle span::after {
+  top: 7px;
+}
+
+@media (max-width: 768px) {
+  .kodnest-nav-container {
+    gap: var(--space-2);
+  }
+
+  .kodnest-nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    flex-direction: column;
+    background: var(--color-bg);
+    border-bottom: 1px solid rgba(17, 17, 17, 0.1);
+    padding: var(--space-3);
+    gap: var(--space-2);
+    z-index: 100;
+  }
+
+  .kodnest-nav.open {
+    display: flex;
+  }
+
+  .kodnest-mobile-toggle {
+    display: block;
+  }
+}
+
+/* ==========================================================================
+   LAYOUT STRUCTURE
+   ========================================================================== */
+
+.kodnest-app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top Bar */
+.kodnest-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-bg);
+  border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+  /* Re-added border-bottom for clear separation */
+}
+
+.kodnest-topbar__project {
+  font-family: var(--font-sans);
+  font-size: var(--text-body-size);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.kodnest-topbar__progress {
+  font-size: var(--text-body-size);
+  color: var(--color-text);
+  opacity: 0.85;
+}
+
+.kodnest-topbar__status {
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid rgba(17, 17, 17, 0.15);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.kodnest-topbar__status--shipped {
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.kodnest-topbar__status--progress {
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+}
+
+/* Context Header */
+.kodnest-context-header {
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  border-bottom: 1px solid rgba(17, 17, 17, 0.06);
+}
+
+/* Main content: Workspace + Panel */
+.kodnest-main {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  /* Important for scrolling */
+  overflow: hidden;
+}
+
+.kodnest-workspace {
+  width: var(--workspace-width);
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+
+.kodnest-panel {
+  width: var(--panel-width);
+  padding: var(--space-4);
+  border-left: 1px solid rgba(17, 17, 17, 0.08);
+  background: var(--color-bg);
+  /* Match bg */
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Proof Footer */
+.kodnest-proof-footer {
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid rgba(17, 17, 17, 0.08);
+  background: var(--color-bg);
+}
+
+.kodnest-proof-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.kodnest-proof-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-body-size);
+  color: var(--color-text);
+}
+
+.kodnest-proof-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   HERO SECTION
+   ========================================================================== */
+
+.kodnest-hero {
+  padding: 6rem 0;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.kodnest-hero__headline {
+  font-family: var(--font-serif);
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 var(--space-3);
+  color: var(--color-text);
+}
+
+.kodnest-hero__subtext {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  opacity: 0.8;
+  margin: 0 auto var(--space-4);
+  max-width: 600px;
+}
+
+/* ==========================================================================
+   RADIO GROUPS (Premium Mode Selection)
+   ========================================================================== */
+
+.kodnest-radio-group {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.kodnest-radio-option {
+  position: relative;
+  flex: 1;
+}
+
+.kodnest-radio-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.kodnest-radio-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2);
+  border: 1px solid rgba(17, 17, 17, 0.2);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-weight: 500;
+  transition: all var(--transition);
+  cursor: pointer;
+  text-align: center;
+}
+
+.kodnest-radio-option input[type="radio"]:checked+.kodnest-radio-label {
+  border-color: var(--color-accent);
+  background: rgba(139, 0, 0, 0.05);
+  color: var(--color-accent);
+}
+
+.kodnest-radio-option input[type="radio"]:hover+.kodnest-radio-label {
+  border-color: rgba(17, 17, 17, 0.4);
+}
+
+/* ==========================================================================
+   FILTER BAR
+   ========================================================================== */
+.kodnest-filter-bar {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.kodnest-filter-bar input,
+.kodnest-filter-bar select {
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid rgba(17, 17, 17, 0.2);
+  border-radius: var(--radius);
+  background: #fff;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.kodnest-filter-bar input:focus,
+.kodnest-filter-bar select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.kodnest-filter-search {
+  flex: 2;
+  min-width: 200px;
+}
+
+.kodnest-filter-select {
+  flex: 1;
+  min-width: 120px;
+}
+
+/* ==========================================================================
+   JOB CARDS
+   ========================================================================== */
+.job-card {
+  background: #fff;
+  border: 1px solid rgba(17, 17, 17, 0.1);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+  transition: box-shadow var(--transition);
+  position: relative;
+}
+
+.job-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  border-color: rgba(17, 17, 17, 0.2);
+}
+
+.job-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-1);
+}
+
+.job-card__title {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.job-card__company {
+  font-size: 0.95rem;
+  color: var(--color-text);
+  opacity: 0.8;
+  margin-bottom: var(--space-2);
+}
+
+.job-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.job-tag {
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  background: rgba(17, 17, 17, 0.05);
+  border-radius: 4px;
+  color: var(--color-text);
+  display: inline-flex;
+  align-items: center;
+}
+
+.job-source-badge {
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.source-linkedin {
+  background: #eef3f8;
+  color: #0a66c2;
+}
+
+.source-naukri {
+  background: #fff8e1;
+  color: #f5a623;
+}
+
+.source-indeed {
+  background: #f0f0ff;
+  color: #2557a7;
+}
+
+.source-other {
+  background: #f3f3f3;
+  color: #555;
+}
+
+.job-card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid rgba(17, 17, 17, 0.06);
+}
+
+.job-posted {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.job-actions {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.btn-xs {
+  padding: 4px 12px;
+  font-size: 0.85rem;
+}
+
+/* ==========================================================================
+   MODAL
+   ========================================================================== */
+.kodnest-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition);
+}
+
+.kodnest-modal-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.kodnest-modal {
+  background: var(--color-bg);
+  width: 90%;
+  max-width: 600px;
+  max-height: 85vh;
+  border-radius: var(--radius);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: translateY(20px);
+  transition: transform var(--transition);
+}
+
+.kodnest-modal-overlay.open .kodnest-modal {
+  transform: translateY(0);
+}
+
+.modal-header {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid rgba(17, 17, 17, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: #fff;
+}
+
+.modal-content {
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+
+.modal-footer {
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid rgba(17, 17, 17, 0.1);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  background: #fff;
+}
+
+.close-modal-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--color-text);
+  opacity: 0.5;
+}
+
+.close-modal-btn:hover {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   SCORE BADGE
+   ========================================================================== */
+.score-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #fff;
+  background: #ccc;
+  margin-left: var(--space-2);
+  flex-shrink: 0;
+}
+
+.score-high {
+  background: #10B981;
+}
+
+/* Green */
+.score-med {
+  background: #F59E0B;
+}
+
+/* Amber */
+.score-low {
+  background: #EF4444;
+}
+
+/* Red */
+.score-neutral {
+  background: #9CA3AF;
+}
+
+/* Grey */
+
+/* ==========================================================================
+   TOGGLE SWITCH
+   ========================================================================== */
+.kodnest-toggle {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  gap: var(--space-2);
+}
+
+.kodnest-toggle input {
+  display: none;
+}
+
+.mtoggle-track {
+  width: 44px;
+  height: 24px;
+  background: rgba(17, 17, 17, 0.2);
+  border-radius: 20px;
+  position: relative;
+  transition: background var(--transition);
+}
+
+.mtoggle-thumb {
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform var(--transition);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.kodnest-toggle input:checked+.mtoggle-track {
+  background: var(--color-accent);
+}
+
+.kodnest-toggle input:checked+.mtoggle-track .mtoggle-thumb {
+  transform: translateX(20px);
+}
+
+.kodnest-range {
+  width: 100%;
+  margin: var(--space-1) 0;
+  accent-color: var(--color-accent);
+}
+
+/* ==========================================================================
+   DIGEST UI (Email Style)
+   ========================================================================== */
+.digest-container {
+  max-width: 680px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid rgba(17, 17, 17, 0.1);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.digest-header {
+  background: var(--color-accent);
+  color: #fff;
+  padding: var(--space-4);
+  text-align: center;
+}
+
+.digest-header h2 {
+  font-family: var(--font-serif);
+  margin: 0 0 var(--space-1);
+  font-size: 1.5rem;
+}
+
+.digest-date {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.digest-body {
+  padding: var(--space-4);
+}
+
+.digest-item {
+  padding: var(--space-3);
+  border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.digest-item:last-child {
+  border-bottom: none;
+}
+
+.digest-item-info h3 {
+  margin: 0 0 4px;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.digest-item-meta {
+  font-size: 0.9rem;
+  color: #555;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.digest-score {
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.digest-footer {
+  background: #f9f9f9;
+  padding: var(--space-3);
+  text-align: center;
+  font-size: 0.85rem;
+  color: #666;
+  border-top: 1px solid rgba(17, 17, 17, 0.08);
+}
+
+.digest-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+  margin: var(--space-4) 0;
+}
+
+/* ==========================================================================
+   STATUS BADGES & UPDATES
+   ========================================================================== */
+.status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.status-not-applied {
+  background: #f3f3f3;
+  color: #666;
+}
+
+.status-applied {
+  background: #E0F2FE;
+  color: #0284C7;
+}
+
+/* Blue */
+.status-rejected {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
+/* Red */
+.status-selected {
+  background: #D1FAE5;
+  color: #059669;
+}
+
+/* Green */
+
+.kodnest-select-xs {
+  padding: 2px 4px;
+  font-size: 0.8rem;
+  border: 1px solid rgba(17, 17, 17, 0.15);
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  outline: none;
+}
+
+/* ==========================================================================
+   TOAST NOTIFICATION
+   ========================================================================== */
+.kodnest-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #111;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 2000;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+
+.kodnest-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.digest-history-item {
+  border-left: 2px solid #eee;
+  padding-left: 12px;
+  margin-bottom: 12px;
+}
+
+.digest-history-date {
+  font-size: 0.75rem;
+  color: #888;
+  margin-bottom: 2px;
+}
+
+/* ==========================================================================
+   COMPONENTS
+   ========================================================================== */
+
+/* Buttons */
+.kodnest-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  font-family: var(--font-sans);
+  font-size: var(--text-body-size);
+  font-weight: 500;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+  text-decoration: none;
+}
+
+.kodnest-btn--primary {
+  background: var(--color-accent);
+  color: #fff;
+  border-color: var(--color-accent);
+}
+
+.kodnest-btn--primary:hover {
+  background: #6D0000;
+  border-color: #6D0000;
+}
+
+.kodnest-btn--secondary {
+  background: transparent;
+  color: var(--color-text);
+  border-color: rgba(17, 17, 17, 0.25);
+}
+
+.kodnest-btn--secondary:hover {
+  border-color: rgba(17, 17, 17, 0.4);
+  background: rgba(17, 17, 17, 0.03);
+}
+
+.kodnest-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Inputs */
+.kodnest-input,
+.kodnest-select,
+.kodnest-textarea {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: var(--text-body-size);
+  padding: var(--space-2);
+  border: 1px solid rgba(17, 17, 17, 0.2);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  color: var(--color-text);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.kodnest-input:focus,
+.kodnest-select:focus,
+.kodnest-textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(139, 0, 0, 0.12);
+}
+
+/* Cards */
+.kodnest-card {
+  border: 1px solid rgba(17, 17, 17, 0.1);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+  background: var(--color-bg);
+  /* Or white if preferred, but bg is safer for consistent tone */
+}
+
+/* Prompt Box */
+.kodnest-prompt-box {
+  position: relative;
+  border: 1px solid rgba(17, 17, 17, 0.1);
+  border-radius: var(--radius);
+  background: rgba(17, 17, 17, 0.02);
+  padding: var(--space-2);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+}
+
+.kodnest-panel-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.kodnest-panel-actions .kodnest-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Utilities */
+.kodnest-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.kodnest-hidden {
+  display: none !important;
+}
+
+/* Job Tracker Specific Overrides/Adapters */
+.jobtracker-heading {
+  font-family: var(--font-serif);
+  font-size: var(--text-heading-size-lg);
+  font-weight: 700;
+  margin-bottom: var(--space-2);
+  color: var(--color-text);
+}
+
+.jobtracker-subtext {
+  font-size: var(--text-body-size);
+  line-height: var(--text-line-height);
+  color: var(--color-text);
+  opacity: 0.9;
+  margin-bottom: var(--space-4);
+  max-width: var(--text-measure);
+}
+
+.jobtracker-job-card {
+  border: 1px solid rgba(17, 17, 17, 0.1);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+  background: #fff;
+  /* Slight contrast for cards */
+  margin-bottom: var(--space-2);
+}
+
+.jobtracker-chip {
+  background: rgba(17, 17, 17, 0.05);
+  border: none;
+  color: var(--color-text);
+  padding: 4px 10px;
+}
+
+.jobtracker-status-btn {
+  border: 1px solid rgba(17, 17, 17, 0.2);
+  background: transparent;
+  color: var(--color-text);
+}
+
+.jobtracker-status-btn--neutral {
+  background: transparent;
+}
+
+.jobtracker-status-btn--applied {
+  border-color: #2563eb;
+  color: #2563eb;
+  background: #eff6ff;
+}
+
+.jobtracker-status-btn--rejected {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: #fef2f2;
+}
+
+.jobtracker-status-btn--selected {
+  border-color: var(--color-success);
+  color: var(--color-success);
+  background: #f0fdf4;
+}
+
+/* Modal */
+.jobtracker-modal {
+  background: var(--color-bg);
+  border: 1px solid rgba(17, 17, 17, 0.1);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+}
